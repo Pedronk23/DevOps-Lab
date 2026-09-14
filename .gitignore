@@ -1,0 +1,33 @@
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# MkDocs (si acabas publicando con GitHub Pages)
+site/
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Nunca subir esto: secretos y ficheros de trabajo
+*.key
+*.pem
+*.p12
+*.pfx
+.env
+.env.*
+*credentials*
+*secret*
+vault-password*
+kubeconfig
+*.kubeconfig
+inventory_real*
