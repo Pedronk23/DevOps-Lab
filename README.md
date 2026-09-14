@@ -1,4 +1,4 @@
-# Devops-Lab
+# DevOps-Lab
 
 Notas técnicas propias de las tecnologías que voy tocando en el día a día como DevOps.
 Todo en markdown, organizado por temas. Es un cuaderno de trabajo, no documentación oficial.
