@@ -50,6 +50,9 @@ Captura una o más letras al principio del texto.
 | `\s` / `\S` | espacio en blanco (espacio, tab, salto de línea) / lo contrario |
 | `.` | cualquier carácter salvo el salto de línea |
 
+> **Cuidado con `[A-z]`**: no equivale a `[A-Za-z]`. Entre la `Z` y la `a` de la tabla ASCII
+> hay otros caracteres (`[`, `\`, `]`, `^`, `_` y el acento grave), que también entrarían.
+
 ### Anclas
 
 | Elemento | Significado |
@@ -80,6 +83,10 @@ Captura una o más letras al principio del texto.
 | `a\|b` | a **o** b |
 | `(?=abc)` | *lookahead*: seguido de abc, sin consumirlo |
 | `(?!abc)` | *lookahead negativo*: **no** seguido de abc |
+| `(?<=abc)` | *lookbehind*: precedido de abc, sin consumirlo |
+| `(?<!abc)` | *lookbehind negativo*: **no** precedido de abc |
+| `\1` … `\9` | *backreference*: repite lo que capturó ese grupo |
+| `\k<nombre>` | backreference a un grupo con nombre |
 
 ### Modificadores (flags)
 
@@ -89,6 +96,7 @@ Captura una o más letras al principio del texto.
 | `m` | multilínea: `^` y `$` casan en cada línea |
 | `s` | el `.` también casa con el salto de línea |
 | `g` | global: todas las coincidencias, no solo la primera (JavaScript, sed) |
+| `u` | unicode: habilita `\u{...}` para cualquier carácter (JavaScript) |
 
 ### Caracteres que hay que escapar
 
@@ -127,6 +135,19 @@ web01\.lab\.local        ← sin escapar, "." casaría con cualquier carácter: 
 | Contraseña con al menos un dígito, una mayúscula y 12 caracteres | `^(?=.*\d)(?=.*[A-Z]).{12,}$` |
 
 > Para validar de verdad IPs, emails o URLs, mejor una librería que una regex casera.
+
+Un nombre DNS completo, con etiquetas de 1 a 63 caracteres que no empiezan ni acaban en guion
+(usa lookahead y lookbehind a la vez):
+
+```regex
+^(?!-)[a-z0-9-]{1,63}(?<!-)(?:\.(?!-)[a-z0-9-]{1,63}(?<!-))*$
+```
+
+Palabras repetidas ("el el perro"), con backreference:
+
+```regex
+\b(\w+)\s+\1\b
+```
 > Las regex "perfectas" de email ocupan varias líneas y aun así fallan en casos raros.
 
 ## Sabores: no todas las regex son iguales
@@ -204,6 +225,22 @@ Usa siempre cadenas `r"..."` (*raw*) para no tener que duplicar las `\`.
 ```
 
 (dentro de strings YAML con comillas dobles, cada `\` va doble)
+
+### JavaScript (Node.js)
+
+```js
+const re1 = /error/g;                    // literal
+const re2 = new RegExp("error", "g");    // constructor: para patrones dinámicos
+
+"2026-09-21".match(/(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/).groups.year  // "2026"
+/\b(\w+)\s+\1\b/.test("el el perro")   // true  (backreference)
+"Mr. Smith".match(/(?<=Mr\.\s)\w+/)[0]   // "Smith"  (lookbehind)
+"100€ 200$".match(/\d+(?=€)/)[0]          // "100"  (lookahead)
+/\u{2200}/u.test("∀")                     // true  (requiere el flag u)
+```
+
+> Para trocear un CSV de verdad (comillas, comas dentro de un campo, saltos de línea) no uses
+> regex: usa una librería, como [pandas](../python/pandas.md) o el módulo `csv` de Python.
 
 ## Probar antes de usar
 

@@ -21,6 +21,8 @@ nota: se abre pulsando en el título de la sección.
 - [K9s](kubernetes/10-k9s.md)
 - [Kinds abreviados (chuleta)](kubernetes/11-kinds-abreviados.md)
 - [Networking (3): resumen con CNI y flujo completo](kubernetes/12-networking-resumen-cni.md)
+- [Entorno local y productividad con kubectl](kubernetes/13-kubectl-productividad-y-entorno-local.md)
+- [Helm y Operators](kubernetes/14-helm-y-operators.md)
 
 ### [Ansible](ansible/README.md)
 - [Conceptos básicos](ansible/01-conceptos-basicos.md)
@@ -87,6 +89,9 @@ nota: se abre pulsando en el título de la sección.
 
 ### [Git](git/README.md)
 - [Git Flow](git/gitflow.md)
+
+### [CI/CD](ci-cd/README.md)
+- [CI/CD con GitLab](ci-cd/01-gitlab-ci.md)
 
 ### Lenguajes: [Python](python/README.md) y [Go](go/README.md)
 - [Python: pandas](python/pandas.md)

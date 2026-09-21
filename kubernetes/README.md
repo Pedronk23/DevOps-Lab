@@ -19,3 +19,5 @@ seguridad y herramientas de operación.
 | 10 | [K9s](10-k9s.md) | TUI de operación diaria |
 | 11 | [Kinds abreviados](11-kinds-abreviados.md) | chuleta de recursos |
 | 12 | [Networking (3): resumen con CNI](12-networking-resumen-cni.md) | visión global del tráfico |
+| 13 | [Entorno local y productividad con kubectl](13-kubectl-productividad-y-entorno-local.md) | clúster local, alias, `explain`, `--dry-run`, namespaces |
+| 14 | [Helm y Operators](14-helm-y-operators.md) | charts, releases, values, CRDs y operators |

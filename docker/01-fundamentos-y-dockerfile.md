@@ -26,13 +26,34 @@ LXC            →   libcontainer   →   runc            →   containerd
 (early Docker)     (2014, 0.9)        (estándar OCI)      (hoy)
 ```
 
+- **LXC**: los primeros Docker usaban LXC (*Linux Containers*) por debajo.
+- **libcontainer**: Docker 0.9 (2014) lo sustituye por su propia librería, escrita en Go.
+- **runc**: libcontainer se dona a la **OCI** (*Open Container Initiative*) y se convierte en
+  `runc`, el runtime de referencia del estándar.
+- **containerd**: gestiona el ciclo de vida completo (imágenes, snapshots, ejecución) y delega
+  en `runc`. Es lo que usan hoy Docker y Kubernetes, este último sin Docker de por medio.
+
+## Docker en Windows
+
+Docker es tecnología del kernel de Linux (namespaces y cgroups). En Windows, Docker Desktop
+levanta una máquina virtual Linux por debajo:
+
+```
+   contenedor Linux  →  VM Linux (WSL2 o Hyper-V)  →  host Windows
+```
+
+Por eso el rendimiento del disco y las rutas de los *bind mounts* no se comportan igual que
+en Linux.
+
 ## Ejecutar contenedores
 
 ```bash
 docker run -d nginx        # -d: corre en el background (detached)
 ```
 
-- **Docker Hub**: registro público de imágenes.
+- **Docker Hub**: registro público de imágenes por defecto. `docker run nginx` equivale a
+  `docker.io/library/nginx:latest`.
+- **Tag**: la versión de la imagen (`docker run redis:7.4`). Sin tag se usa `latest`.
 - Un contenedor **no está pensado para correr todo un sistema operativo**, solo una función:
   cuando acaba la función, muere.
 - Un contenedor base no abre una terminal para enviar información de vuelta. Para eso:
@@ -105,6 +126,11 @@ ENV FLASK_APP=/opt/app.py                # variable de entorno
 ENTRYPOINT flask run --host=0.0.0.0      # arrancar el servidor web
 ```
 
+```bash
+docker build -t webapp .     # construir la imagen con el Dockerfile del directorio actual
+docker init                  # genera Dockerfile, compose.yaml y .dockerignore según el lenguaje
+```
+
 ### Instrucciones más usadas
 
 | Instrucción | Para qué |
@@ -150,6 +176,12 @@ docker buildx build --platform linux/amd64,linux/arm64 -t web:1.0 --push .
 docker build --secret id=token,src=./token.txt -t web .   # secreto que no queda en capas
 ```
 
+En el Dockerfile, ese secreto solo existe mientras dura el `RUN`:
+
+```dockerfile
+RUN --mount=type=secret,id=token cat /run/secrets/token
+```
+
 ## Multi-stage build
 
 Resuelve el problema del tamaño: compilas en una imagen gorda y copias solo el binario a una
@@ -190,3 +222,6 @@ docker stats                 # consumo en vivo
 docker system df             # cuánto espacio ocupa todo
 docker system prune -a       # limpiar (¡borra imágenes sin usar!)
 ```
+
+> Los IDs no hace falta escribirlos enteros: bastan los primeros caracteres si son únicos
+> (`docker stop d1ba`). Y `docker ps --no-trunc` los muestra completos, sin recortar.

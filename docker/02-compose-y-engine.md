@@ -84,6 +84,13 @@ Tres piezas:
 **Acceso remoto**: TLS en el puerto 2376. Recomendado: hacerlo por SSH
 (`DOCKER_HOST=ssh://usuario@servidor`), que no expone el daemon a la red.
 
+```bash
+docker -H ssh://devops@srv01 ps                                  # para una sola vez
+docker context create remoto --docker "host=ssh://devops@srv01"  # guardarlo como contexto
+docker context use remoto                                        # todos los comandos van allí
+docker context ls
+```
+
 > Exponer el socket del daemon sin TLS equivale a dar root en el host: quien pueda hablar con
 > el daemon puede montar `/` dentro de un contenedor privilegiado.
 
@@ -96,6 +103,30 @@ docker CLI → docker DAEMON → containerd → runc
  que escribes   volúmenes    (estándar)  namespaces y cgroups del
                                           kernel de Linux
 ```
+
+## Aislamiento: namespaces
+
+Cada contenedor tiene su propia vista del sistema gracias a los **namespaces** del kernel:
+
+| Namespace | Aísla |
+|---|---|
+| PID | procesos: el principal del contenedor es el PID 1 dentro |
+| Network | interfaces, IPs y puertos |
+| Mount | sistema de ficheros |
+| IPC | memoria compartida y colas de mensajes |
+| UTS | hostname |
+| User | UIDs y GIDs |
+
+## Límites de recursos: cgroups
+
+```bash
+docker run --cpus=0.5 ubuntu        # como mucho, media CPU
+docker run --memory=100m ubuntu     # 100 MB: si los supera, el kernel lo mata (OOM kill)
+docker stats                        # consumo real en vivo
+```
+
+> Sin límites, un contenedor puede comerse la memoria del host y tumbar a los demás. En
+> Kubernetes lo mismo se declara con `requests` y `limits`.
 
 ## Almacenamiento
 
