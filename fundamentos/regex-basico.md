@@ -239,6 +239,23 @@ const re2 = new RegExp("error", "g");    // constructor: para patrones dinámico
 /\u{2200}/u.test("∀")                     // true  (requiere el flag u)
 ```
 
+Un CSV sencillo a objetos, partiendo por líneas con `/\r?\n/` (así vale igual con finales de
+línea de Windows y de Linux):
+
+```js
+const csv = `nombre,edad
+Ana,30
+Luis,25`;
+
+const [cabecera, ...filas] = csv.trim().split(/\r?\n/);
+const claves = cabecera.split(",");
+
+const json = filas.map(fila =>
+  Object.fromEntries(fila.split(",").map((v, i) => [claves[i], v]))
+);
+// [{ nombre: "Ana", edad: "30" }, { nombre: "Luis", edad: "25" }]
+```
+
 > Para trocear un CSV de verdad (comillas, comas dentro de un campo, saltos de línea) no uses
 > regex: usa una librería, como [pandas](../python/pandas.md) o el módulo `csv` de Python.
 

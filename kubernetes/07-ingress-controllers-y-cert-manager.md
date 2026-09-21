@@ -39,3 +39,36 @@ certificados de seguridad. Automatiza el ciclo de vida completo:
 2. Valida que el dominio sea tuyo.
 3. Guarda las claves de forma segura en el clúster (**Secrets**).
 4. Las renueva antes de que caduquen.
+
+## Exponer sin abrir puertos: Cloudflare Tunnel
+
+Alternativa al par LoadBalancer + Ingress cuando no puedes (o no quieres) abrir puertos en el
+router: un agente dentro del clúster abre una conexión **de salida** y Cloudflare le entrega
+el tráfico por ahí.
+
+```
+   LoadBalancer + Ingress                 Cloudflare Tunnel
+   ──────────────────────                 ─────────────────
+   Internet ──► IP pública :443           cloudflared ──(saliente)──► Cloudflare
+            (puerto abierto en el                                      ▲
+             router / firewall)            Internet ─────► app.tudominio.com
+                  │                                                    │
+                  ▼                        el tráfico baja por la conexión ya abierta
+             Ingress ─► Service            Ingress / Service
+```
+
+- **cloudflared** se despliega como un Deployment más y se autentica con un token guardado en
+  un Secret.
+- El nombre público se gestiona en Cloudflare, no hace falta DNS dinámico ni IP fija.
+- Sin puertos de entrada: nada escucha desde fuera, lo que reduce mucho la superficie expuesta
+  (ver [puertos que no conviene exponer](../redes/02-puertos-comunes.md)).
+
+| A favor | En contra |
+|---|---|
+| No hay que abrir puertos ni tener IP fija | dependes de un tercero y de su disponibilidad |
+| TLS y protección delante, sin configurarlos | el tráfico se descifra en Cloudflare |
+| Ideal para un laboratorio en casa | menos control que un Ingress propio |
+
+Ideas parecidas: **Tailscale Funnel**, **ngrok** o un túnel SSH inverso contra un VPS
+(ver [túneles SSH](../seguridad/06-tuneles-ssh-x11-socks.md)). En producción de empresa, lo
+habitual sigue siendo Ingress Controller + certificados gestionados con cert-manager.
