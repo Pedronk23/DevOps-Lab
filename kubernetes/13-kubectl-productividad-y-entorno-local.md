@@ -132,6 +132,8 @@ k config view --minify | grep namespace          # ¿en cuál estoy?
 
 ## Vim para YAML
 
+Lo justo para editar manifiestos; la guía completa está en [vim](../linux-shell/06-vim.md).
+
 | Atajo | Acción |
 |---|---|
 | `:set paste` | pegar sin que vim destroce la indentación |
