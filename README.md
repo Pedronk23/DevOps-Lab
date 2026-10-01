@@ -83,6 +83,8 @@ nota: se abre pulsando en el título de la sección.
 - [GRUB](linux-shell/03-grub.md)
 - [Permisos](linux-shell/04-permisos.md)
 - [sed](linux-shell/05-sed.md)
+- [vim](linux-shell/06-vim.md)
+- [nano](linux-shell/07-nano.md)
 
 ### [Observabilidad](observabilidad/README.md)
 - [Prometheus, Node Exporter y Grafana](observabilidad/prometheus-y-grafana.md)
@@ -92,6 +94,7 @@ nota: se abre pulsando en el título de la sección.
 
 ### [CI/CD](ci-cd/README.md)
 - [CI/CD con GitLab](ci-cd/01-gitlab-ci.md)
+- [CI/CD con GitLab (2): entornos y despliegue](ci-cd/02-gitlab-ci-entornos-y-despliegue.md)
 
 ### Lenguajes: [Python](python/README.md) y [Go](go/README.md)
 - [Python: pandas](python/pandas.md)
